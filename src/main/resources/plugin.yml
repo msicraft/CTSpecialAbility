@@ -1,0 +1,4 @@
+name: CTSpecialAbility
+version: '${project.version}'
+main: me.msicraft.ctspecialability.CTSpecialAbility
+api-version: '1.20'
