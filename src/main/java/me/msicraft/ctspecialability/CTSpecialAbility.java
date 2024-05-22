@@ -1,5 +1,8 @@
 package me.msicraft.ctspecialability;
 
+import me.msicraft.ctspecialability.Command.MainCommand;
+import me.msicraft.ctspecialability.PlayerData.Event.PlayerRelatedEvent;
+import me.msicraft.ctspecialability.SpecialAbility.SpecialAbilityManager;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -19,10 +22,14 @@ public final class CTSpecialAbility extends JavaPlugin {
 
     public static final String PREFIX = ChatColor.GREEN + "[CTSpecialAbility]";
 
+    private SpecialAbilityManager specialAbilityManager;
+
     @Override
     public void onEnable() {
         plugin = this;
         createConfigFiles();
+
+        specialAbilityManager = new SpecialAbilityManager(this);
 
         eventRegister();
         commandRegister();
@@ -37,13 +44,17 @@ public final class CTSpecialAbility extends JavaPlugin {
     }
 
     private void eventRegister() {
+        getServer().getPluginManager().registerEvents(new PlayerRelatedEvent(this), this);
     }
 
     private void commandRegister() {
+        getCommand("ctspecialability").setExecutor(new MainCommand(this));
     }
 
     public void reloadVariables() {
         reloadConfig();
+
+        specialAbilityManager.reloadVariables();
     }
 
     private void createConfigFiles() {
@@ -58,6 +69,10 @@ public final class CTSpecialAbility extends JavaPlugin {
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }
+    }
+
+    public SpecialAbilityManager getSpecialAbilityManager() {
+        return specialAbilityManager;
     }
 
 }

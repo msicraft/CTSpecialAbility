@@ -1,0 +1,9 @@
+SpecialAbility:
+  Combat:
+    FlatLifeSteal:
+      Enabled: false
+      CoolDown: 1
+      MinAmount: 0.5
+      MaxAmount: 1.5
+      DisplayName: "생명력 흡수 I"
+  Life:

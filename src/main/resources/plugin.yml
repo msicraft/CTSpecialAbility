@@ -2,3 +2,7 @@ name: CTSpecialAbility
 version: '${project.version}'
 main: me.msicraft.ctspecialability.CTSpecialAbility
 api-version: '1.20'
+commands:
+  ctspecialability:
+    description: Main command
+    aliases: [ctsa]
