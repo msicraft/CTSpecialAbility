@@ -11,6 +11,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
@@ -29,7 +30,8 @@ import java.util.Set;
 public class MaxHealthBasedLifeSteal extends SpecialAbility {
 
     public MaxHealthBasedLifeSteal(String internalName) {
-        super(Trigger.ATTACK_ENTITY, SpecialAbilityType.COMBAT, internalName, Set.of(ToolCategory.SWORD));
+        super(new NamespacedKey(CTSpecialAbility.getPlugin(), "CTSpecialAbility_MaxHealthBasedLifeSteal")
+                ,Trigger.ATTACK_ENTITY, SpecialAbilityType.COMBAT, internalName, Set.of(ToolCategory.SWORD));
     }
 
     private double minAmount;
@@ -56,9 +58,9 @@ public class MaxHealthBasedLifeSteal extends SpecialAbility {
             ItemStack itemStack = player.getInventory().getItem(slot);
 
             PersistentDataContainer dataContainer = itemStack.getItemMeta().getPersistentDataContainer();
-            if (dataContainer.has(KEY)) {
+            if (dataContainer.has(getKey())) {
                 if (!playerStats.isCoolDown(getInternalName())) {
-                    String dataValue = dataContainer.get(KEY, PersistentDataType.STRING);
+                    String dataValue = dataContainer.get(getKey(), PersistentDataType.STRING);
                     if (dataValue == null) {
                         return;
                     }
@@ -91,7 +93,7 @@ public class MaxHealthBasedLifeSteal extends SpecialAbility {
         double value = Math.round(MathUtil.getRangeRandomDouble(maxAmount, minAmount) * 100) / 100.0;
         PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
         dataContainer.set(SpecialAbility.KEY, PersistentDataType.STRING, getInternalName());
-        dataContainer.set(KEY, PersistentDataType.STRING, String.valueOf(value));
+        dataContainer.set(getKey(), PersistentDataType.STRING, String.valueOf(value));
 
         List<Component> lore = new ArrayList<>();
         lore.add(Component.text(ChatColor.GREEN + "특수능력 (" + getDisplayName() + ChatColor.GREEN

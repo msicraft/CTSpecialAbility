@@ -11,6 +11,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -28,11 +29,12 @@ import java.util.Set;
 public class ExtraFlatDamage extends SpecialAbility {
 
     public ExtraFlatDamage(String internalName) {
-        super(Trigger.ATTACK_ENTITY, SpecialAbilityType.COMBAT, internalName, Set.of(ToolCategory.SWORD));
+        super(new NamespacedKey(CTSpecialAbility.getPlugin(), "CTSpecialAbility_ExtraFlatDamage")
+                ,Trigger.ATTACK_ENTITY, SpecialAbilityType.COMBAT, internalName, Set.of(ToolCategory.SWORD));
     }
 
-    private int minAmount;
-    private int maxAmount;
+    private double minAmount;
+    private double maxAmount;
 
     @Override
     public void updateVariables() {
@@ -43,8 +45,8 @@ public class ExtraFlatDamage extends SpecialAbility {
         setCoolDown(config.contains(path + ".CoolDown") ? config.getDouble(path + ".CoolDown") : 1);
         setDisplayName(config.contains(path + ".DisplayName") ? config.getString(path + ".DisplayName") : "Unknown");
 
-        this.minAmount = config.contains(path + ".MinAmount") ? config.getInt(path + ".MinAmount") : 0;
-        this.maxAmount = config.contains(path + ".MaxAmount") ? config.getInt(path + ".MaxAmount") : 0;
+        this.minAmount = config.contains(path + ".MinAmount") ? config.getDouble(path + ".MinAmount") : 0;
+        this.maxAmount = config.contains(path + ".MaxAmount") ? config.getDouble(path + ".MaxAmount") : 0;
     }
 
     @Override
@@ -55,9 +57,9 @@ public class ExtraFlatDamage extends SpecialAbility {
             ItemStack itemStack = player.getInventory().getItem(slot);
 
             PersistentDataContainer dataContainer = itemStack.getItemMeta().getPersistentDataContainer();
-            if (dataContainer.has(KEY)) {
+            if (dataContainer.has(getKey())) {
                 if (!playerStats.isCoolDown(getInternalName())) {
-                    String dataValue = dataContainer.get(KEY, PersistentDataType.STRING);
+                    String dataValue = dataContainer.get(getKey(), PersistentDataType.STRING);
                     if (dataValue == null) {
                         return;
                     }
@@ -80,14 +82,14 @@ public class ExtraFlatDamage extends SpecialAbility {
         if (itemMeta == null) {
             return;
         }
-        int value = MathUtil.getRangeRandomInt(maxAmount,  minAmount);
+        double value = (MathUtil.getRangeRandomDouble(maxAmount,  minAmount) * 10.0) / 10.0;
         PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
         dataContainer.set(SpecialAbility.KEY, PersistentDataType.STRING, getInternalName());
-        dataContainer.set(KEY, PersistentDataType.STRING, String.valueOf(value));
+        dataContainer.set(getKey(), PersistentDataType.STRING, String.valueOf(value));
 
         List<Component> lore = new ArrayList<>();
         lore.add(Component.text(ChatColor.GREEN + "특수능력 (" + getDisplayName() + ChatColor.GREEN
-                + "): 공격시 " + ChatColor.AQUA + value + ChatColor.GREEN + " 추가 데미지 (" + getCoolDown() + ")"));
+                + "): 공격시 " + ChatColor.AQUA + (Math.round(value * 10.0) / 10.0) + ChatColor.GREEN + " 추가 데미지 (" + getCoolDown() + ")"));
         if (itemMeta.hasLore()) {
             PlainTextComponentSerializer plainTextComponentSerializer = PlainTextComponentSerializer.plainText();
             List<Component> original = itemMeta.lore();

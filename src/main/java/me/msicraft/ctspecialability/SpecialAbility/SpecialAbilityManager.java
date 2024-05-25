@@ -26,7 +26,7 @@ public class SpecialAbilityManager {
 
         map.put("FlatLifeSteal", new FlatLifeSteal("FlatLifeSteal"));
         map.put("ExtraFlatDamage", new ExtraFlatDamage("ExtraFlatDamage"));
-        map.put("MaxHealthBasedLifeSteal", new MaxHealthBasedLifeSteal("MaxHealthBasedLife"));
+        map.put("MaxHealthBasedLifeSteal", new MaxHealthBasedLifeSteal("MaxHealthBasedLifeSteal"));
 
         map.put("ExtraBoneMeal", new ExtraBoneMeal("ExtraBoneMeal"));
         map.put("SandChangeGlass", new SandChangeGlass("SandChangeGlass"));

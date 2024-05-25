@@ -29,13 +29,12 @@ import java.util.Set;
 
 public class FlatLifeSteal extends SpecialAbility {
 
-    private final NamespacedKey KEY = new NamespacedKey(CTSpecialAbility.getPlugin(), "CTSpecialAbility_FlatLifeSteal");
-
     private double minAmount = 0;
     private double maxAmount = 0;
 
     public FlatLifeSteal(String internalName) {
-        super(Trigger.ATTACK_ENTITY, SpecialAbilityType.COMBAT, internalName, Set.of(ToolCategory.SWORD));
+        super(new NamespacedKey(CTSpecialAbility.getPlugin(),"CTSpecialAbility_FlatLifeSteal")
+                ,Trigger.ATTACK_ENTITY, SpecialAbilityType.COMBAT, internalName, Set.of(ToolCategory.SWORD));
     }
 
     @Override
@@ -59,9 +58,9 @@ public class FlatLifeSteal extends SpecialAbility {
             ItemStack itemStack = player.getInventory().getItem(slot);
 
             PersistentDataContainer dataContainer = itemStack.getItemMeta().getPersistentDataContainer();
-            if (dataContainer.has(KEY)) {
+            if (dataContainer.has(getKey())) {
                 if (!playerStats.isCoolDown(getInternalName())) {
-                    String dataValue = dataContainer.get(KEY, PersistentDataType.STRING);
+                    String dataValue = dataContainer.get(getKey(), PersistentDataType.STRING);
                     if (dataValue == null) {
                         return;
                     }
@@ -94,7 +93,7 @@ public class FlatLifeSteal extends SpecialAbility {
         double value = Math.round(MathUtil.getRangeRandomDouble(maxAmount, minAmount) * 10) / 10.0;
         PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
         dataContainer.set(SpecialAbility.KEY, PersistentDataType.STRING, getInternalName());
-        dataContainer.set(KEY, PersistentDataType.STRING, String.valueOf(value));
+        dataContainer.set(getKey(), PersistentDataType.STRING, String.valueOf(value));
 
         List<Component> lore = new ArrayList<>();
         lore.add(Component.text(ChatColor.GREEN + "특수능력 (" + getDisplayName() + ChatColor.GREEN

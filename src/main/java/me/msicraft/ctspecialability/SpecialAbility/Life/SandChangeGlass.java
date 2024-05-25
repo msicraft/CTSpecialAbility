@@ -8,9 +8,7 @@ import me.msicraft.ctspecialability.SpecialAbility.Data.ToolCategory;
 import me.msicraft.ctspecialability.SpecialAbility.Data.Trigger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -28,7 +26,8 @@ import java.util.Set;
 public class SandChangeGlass extends SpecialAbility {
 
     public SandChangeGlass(String internalName) {
-        super(Trigger.BLOCK_BREAK, SpecialAbilityType.LIFE, internalName, Set.of(ToolCategory.SHOVEL));
+        super(new NamespacedKey(CTSpecialAbility.getPlugin(), "CTSpecialAbility_SandChangeGlass")
+                ,Trigger.BLOCK_BREAK, SpecialAbilityType.LIFE, internalName, Set.of(ToolCategory.SHOVEL));
     }
 
     @Override
@@ -49,12 +48,15 @@ public class SandChangeGlass extends SpecialAbility {
             Player player = e.getPlayer();
             ItemStack itemStack = player.getInventory().getItem(slot);
             PersistentDataContainer dataContainer = itemStack.getItemMeta().getPersistentDataContainer();
-            if (dataContainer.has(KEY)) {
+            if (dataContainer.has(getKey())) {
                 if (!playerStats.isCoolDown(getInternalName())) {
-                    e.setDropItems(false);
+                    e.setCancelled(true);
 
+                    World world = block.getWorld();
                     Location location = block.getLocation();
-                    block.getWorld().dropItemNaturally(location, new ItemStack(Material.GLASS, 1));
+
+                    block.setType(Material.AIR);
+                    world.dropItemNaturally(location, new ItemStack(Material.GLASS, 1));
 
                     playerStats.setCoolDown(getInternalName(), getCoolDown());
                 }
@@ -73,7 +75,7 @@ public class SandChangeGlass extends SpecialAbility {
         }
         PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
         dataContainer.set(SpecialAbility.KEY, PersistentDataType.STRING, getInternalName());
-        dataContainer.set(KEY, PersistentDataType.STRING, "SandChangeToGlass");
+        dataContainer.set(getKey(), PersistentDataType.STRING, "SandChangeToGlass");
 
         List<Component> lore = new ArrayList<>();
         lore.add(Component.text(ChatColor.GREEN + "특수능력 (" + getDisplayName() + ChatColor.GREEN

@@ -10,7 +10,7 @@ SpecialAbility:
       Enabled: true
       CoolDown: 1
       MinAmount: 0.1
-      MaxAmount: 0.5
+      MaxAmount: 0.3
       DisplayName: "생명력 흡수 II"
     ExtraFlatDamage:
       Enabled: true

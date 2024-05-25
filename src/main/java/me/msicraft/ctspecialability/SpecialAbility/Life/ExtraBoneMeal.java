@@ -30,10 +30,9 @@ import java.util.Set;
 
 public class ExtraBoneMeal extends SpecialAbility {
 
-    private final NamespacedKey KEY = new NamespacedKey(CTSpecialAbility.getPlugin(), "CTSpecialAbility_ExtraBoneMeal");
-
     public ExtraBoneMeal(String internalName) {
-        super(Trigger.HARVEST, SpecialAbilityType.LIFE, internalName, Set.of(ToolCategory.ALL));
+        super(new NamespacedKey(CTSpecialAbility.getPlugin(), "CTSpecialAbility_ExtraBoneMeal")
+                ,Trigger.HARVEST, SpecialAbilityType.LIFE, internalName, Set.of(ToolCategory.ALL));
     }
 
     private double minChance = 0;
@@ -66,9 +65,9 @@ public class ExtraBoneMeal extends SpecialAbility {
             ItemStack itemStack = player.getInventory().getItem(slot);
 
             PersistentDataContainer dataContainer = itemStack.getItemMeta().getPersistentDataContainer();
-            if (dataContainer.has(KEY)) {
+            if (dataContainer.has(getKey())) {
                 if (!playerStats.isCoolDown(getInternalName())) {
-                    String dataValue = dataContainer.get(KEY, PersistentDataType.STRING);
+                    String dataValue = dataContainer.get(getKey(), PersistentDataType.STRING);
                     if (dataValue == null) {
                         return;
                     }
@@ -95,9 +94,9 @@ public class ExtraBoneMeal extends SpecialAbility {
         Player player = e.getPlayer();
         ItemStack itemStack = player.getInventory().getItem(slot);
         PersistentDataContainer dataContainer = itemStack.getItemMeta().getPersistentDataContainer();
-        if (dataContainer.has(KEY)) {
+        if (dataContainer.has(getKey())) {
             if (!playerStats.isCoolDown(getInternalName())) {
-                String dataValue = dataContainer.get(KEY, PersistentDataType.STRING);
+                String dataValue = dataContainer.get(getKey(), PersistentDataType.STRING);
                 if (dataValue == null) {
                     return;
                 }
@@ -126,7 +125,7 @@ public class ExtraBoneMeal extends SpecialAbility {
         int value = MathUtil.getRangeRandomInt(maxAmount, minAmount);
         PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
         dataContainer.set(SpecialAbility.KEY, PersistentDataType.STRING, getInternalName());
-        dataContainer.set(KEY, PersistentDataType.STRING, chance + ":" + value);
+        dataContainer.set(getKey(), PersistentDataType.STRING, chance + ":" + value);
 
         List<Component> lore = new ArrayList<>();
         lore.add(Component.text(ChatColor.GREEN + "특수능력 (" + getDisplayName() + ChatColor.GREEN

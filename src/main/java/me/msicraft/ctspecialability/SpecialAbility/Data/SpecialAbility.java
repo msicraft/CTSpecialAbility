@@ -17,6 +17,7 @@ import java.util.Set;
 public abstract class SpecialAbility {
 
     public static final NamespacedKey KEY = new NamespacedKey(CTSpecialAbility.getPlugin(), "CTSpecialAbility");
+    private final NamespacedKey key;
 
     private boolean isEnabled = false;
     private final String internalName;
@@ -27,7 +28,8 @@ public abstract class SpecialAbility {
     private final Trigger trigger;
     private final Set<ToolCategory> allowsTools;
 
-    public SpecialAbility(Trigger trigger, SpecialAbilityType specialAbilityType, String internalName, Set<ToolCategory> allowsTools) {
+    public SpecialAbility(NamespacedKey key, Trigger trigger, SpecialAbilityType specialAbilityType, String internalName, Set<ToolCategory> allowsTools) {
+        this.key = key;
         this.trigger = trigger;
         this.specialAbilityType = specialAbilityType;
         this.internalName = internalName;
@@ -62,6 +64,10 @@ public abstract class SpecialAbility {
             }
         }
         return false;
+    }
+
+    public NamespacedKey getKey() {
+        return key;
     }
 
     public void setCoolDown(double coolDown) {
