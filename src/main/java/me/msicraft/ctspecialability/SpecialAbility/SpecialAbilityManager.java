@@ -1,6 +1,7 @@
 package me.msicraft.ctspecialability.SpecialAbility;
 
 import me.msicraft.ctspecialability.CTSpecialAbility;
+import me.msicraft.ctspecialability.SpecialAbility.Combat.ExtraFlatDamage;
 import me.msicraft.ctspecialability.SpecialAbility.Combat.FlatLifeSteal;
 import me.msicraft.ctspecialability.SpecialAbility.Combat.MaxHealthBasedLifeSteal;
 import me.msicraft.ctspecialability.SpecialAbility.Data.SpecialAbility;
@@ -24,8 +25,10 @@ public class SpecialAbilityManager {
         this.plugin = plugin;
 
         map.put("FlatLifeSteal", new FlatLifeSteal("FlatLifeSteal"));
-        map.put("ExtraBoneMeal", new ExtraBoneMeal("ExtraBoneMeal"));
+        map.put("ExtraFlatDamage", new ExtraFlatDamage("ExtraFlatDamage"));
         map.put("MaxHealthBasedLifeSteal", new MaxHealthBasedLifeSteal("MaxHealthBasedLife"));
+
+        map.put("ExtraBoneMeal", new ExtraBoneMeal("ExtraBoneMeal"));
         map.put("SandChangeGlass", new SandChangeGlass("SandChangeGlass"));
     }
 
