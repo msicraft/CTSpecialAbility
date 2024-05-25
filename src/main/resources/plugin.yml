@@ -2,6 +2,7 @@ name: CTSpecialAbility
 version: '${project.version}'
 main: me.msicraft.ctspecialability.CTSpecialAbility
 api-version: '1.20'
+depend: [CTCore, CTPlayerData]
 commands:
   ctspecialability:
     description: Main command

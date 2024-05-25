@@ -2,6 +2,9 @@ package me.msicraft.ctspecialability;
 
 import me.msicraft.ctspecialability.Command.MainCommand;
 import me.msicraft.ctspecialability.PlayerData.Event.PlayerRelatedEvent;
+import me.msicraft.ctspecialability.PlayerData.PlayerStatsManager;
+import me.msicraft.ctspecialability.SpecialAbility.Event.SpecialAbilityApplyEvent;
+import me.msicraft.ctspecialability.SpecialAbility.Event.SpecialAbilityRegisterEvent;
 import me.msicraft.ctspecialability.SpecialAbility.SpecialAbilityManager;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -22,6 +25,7 @@ public final class CTSpecialAbility extends JavaPlugin {
 
     public static final String PREFIX = ChatColor.GREEN + "[CTSpecialAbility]";
 
+    private PlayerStatsManager playerStatsManager;
     private SpecialAbilityManager specialAbilityManager;
 
     @Override
@@ -29,6 +33,7 @@ public final class CTSpecialAbility extends JavaPlugin {
         plugin = this;
         createConfigFiles();
 
+        playerStatsManager = new PlayerStatsManager(this);
         specialAbilityManager = new SpecialAbilityManager(this);
 
         eventRegister();
@@ -45,6 +50,8 @@ public final class CTSpecialAbility extends JavaPlugin {
 
     private void eventRegister() {
         getServer().getPluginManager().registerEvents(new PlayerRelatedEvent(this), this);
+        getServer().getPluginManager().registerEvents(new SpecialAbilityRegisterEvent(this), this);
+        getServer().getPluginManager().registerEvents(new SpecialAbilityApplyEvent(this), this);
     }
 
     private void commandRegister() {
@@ -69,6 +76,10 @@ public final class CTSpecialAbility extends JavaPlugin {
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }
+    }
+
+    public PlayerStatsManager getPlayerStatsManager() {
+        return playerStatsManager;
     }
 
     public SpecialAbilityManager getSpecialAbilityManager() {

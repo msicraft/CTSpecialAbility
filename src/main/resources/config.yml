@@ -1,9 +1,33 @@
 SpecialAbility:
   Combat:
     FlatLifeSteal:
-      Enabled: false
+      Enabled: true
       CoolDown: 1
       MinAmount: 0.5
       MaxAmount: 1.5
       DisplayName: "생명력 흡수 I"
+    MaxHealthBasedLifeSteal:
+      Enabled: true
+      CoolDown: 1
+      MinAmount: 0.1
+      MaxAmount: 0.5
+      DisplayName: "생명력 흡수 II"
+    ExtraFlatDamage:
+      Enabled: true
+      CoolDown: 1
+      MinAmount: 1
+      MaxAmount: 3
+      DisplayName: "추가 데미지"
   Life:
+    ExtraBoneMeal:
+      Enabled: true
+      CoolDown: 1
+      MinChance: 0.1
+      MaxChance: 0.5
+      MinAmount: 1
+      MaxAmount: 3
+      DisplayName: "추가 뼛가루 드랍"
+    SandChangeGlass:
+      Enabled: true
+      CoolDown: 1
+      DisplayName: "모래 변환"
