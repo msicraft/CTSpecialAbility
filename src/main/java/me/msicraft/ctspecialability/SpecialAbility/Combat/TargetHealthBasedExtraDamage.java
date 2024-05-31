@@ -14,6 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -26,15 +27,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class ExtraFlatDamage extends SpecialAbility {
+public class TargetHealthBasedExtraDamage extends SpecialAbility {
 
-    public ExtraFlatDamage(String internalName) {
-        super(new NamespacedKey(CTSpecialAbility.getPlugin(), "CTSpecialAbility_ExtraFlatDamage")
-                ,Trigger.ATTACK_ENTITY, SpecialAbilityType.COMBAT, internalName, Set.of(ToolCategory.SWORD));
+    public TargetHealthBasedExtraDamage(String internalName) {
+        super(new NamespacedKey(CTSpecialAbility.getPlugin(),"CTSpecialAbility_TargetHealthBasedExtraDamage"),
+               Trigger.ATTACK_ENTITY, SpecialAbilityType.COMBAT, internalName, Set.of(ToolCategory.SWORD));
     }
 
-    private double minAmount;
-    private double maxAmount;
+    private double minHealthRate = 1;
+    private double maxHealthRate = 1;
+
+    private double minExtraDamageRate = 0;
+    private double maxExtraDamageRate = 0;
 
     @Override
     public void updateVariables() {
@@ -45,8 +49,11 @@ public class ExtraFlatDamage extends SpecialAbility {
         setCoolDown(config.contains(path + ".CoolDown") ? config.getDouble(path + ".CoolDown") : 1);
         setDisplayName(config.contains(path + ".DisplayName") ? config.getString(path + ".DisplayName") : "Unknown");
 
-        this.minAmount = config.contains(path + ".MinAmount") ? config.getDouble(path + ".MinAmount") : 0;
-        this.maxAmount = config.contains(path + ".MaxAmount") ? config.getDouble(path + ".MaxAmount") : 0;
+        this.minHealthRate = config.contains(path + ".MinHealthRate") ? config.getDouble(path + ".MinHealthRate") : 1;
+        this.maxHealthRate = config.contains(path + ".MaxHealthRate") ? config.getDouble(path + ".MaxHealthRate") : 1;
+
+        this.minExtraDamageRate = config.contains(path + ".MinExtraDamageRate")? config.getDouble(path + ".MinExtraDamageRate") : 0;
+        this.maxExtraDamageRate = config.contains(path + ".MaxExtraDamageRate")? config.getDouble(path + ".MaxExtraDamageRate") : 0;
     }
 
     @Override
@@ -63,13 +70,22 @@ public class ExtraFlatDamage extends SpecialAbility {
                     if (dataValue == null) {
                         return;
                     }
-                    double value = Double.parseDouble(dataValue);
+                    String[] a = dataValue.split(":");
+                    double targetHealthRate = Double.parseDouble(a[0]);
+                    Entity target = e.getEntity();
+                    if (target instanceof LivingEntity livingEntity) {
+                        double healthRate = livingEntity.getHealth() / livingEntity.getMaxHealth();
+                        if (healthRate >= targetHealthRate) {
+                            double extraDamageRate = Double.parseDouble(a[1]);
 
-                    double cal = e.getDamage() + value;
+                            double originalDamage = e.getDamage();
+                            double cal = originalDamage + (originalDamage * extraDamageRate);
 
-                    e.setDamage(cal);
+                            e.setDamage(cal);
 
-                    playerStats.setCoolDown(getInternalName(), getCoolDown());
+                            playerStats.setCoolDown(getInternalName(), getCoolDown());
+                        }
+                    }
                 }
             }
         }
@@ -84,14 +100,16 @@ public class ExtraFlatDamage extends SpecialAbility {
         if (itemMeta == null) {
             return;
         }
-        double value = (MathUtil.getRangeRandomDouble(maxAmount,  minAmount) * 10.0) / 10.0;
+        double targetHealthRate = (MathUtil.getRangeRandomDouble(maxHealthRate,  minHealthRate) * 10.0) / 10.0;
+        double extraDamageRate = (MathUtil.getRangeRandomDouble(maxExtraDamageRate,  minExtraDamageRate) * 10.0) / 10.0;
         PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
         dataContainer.set(SpecialAbility.KEY, PersistentDataType.STRING, getInternalName());
-        dataContainer.set(getKey(), PersistentDataType.STRING, String.valueOf(value));
+        dataContainer.set(getKey(), PersistentDataType.STRING, targetHealthRate + ":" + extraDamageRate);
 
         List<Component> lore = new ArrayList<>();
         lore.add(Component.text(ChatColor.GREEN + "특수능력 (" + getDisplayName() + ChatColor.GREEN
-                + "): 공격시 " + ChatColor.AQUA + (Math.round(value * 10.0) / 10.0) + ChatColor.GREEN + " 추가 데미지 (" + getCoolDown() + ")"));
+                + "): 타켓의 체력이 " + ChatColor.AQUA + (targetHealthRate * 100) + ChatColor.GREEN + "% 이상이라면 " + ChatColor.AQUA
+                + extraDamageRate + "% " + ChatColor.GREEN + " 추가 데미지"));
         if (itemMeta.hasLore()) {
             PlainTextComponentSerializer plainTextComponentSerializer = PlainTextComponentSerializer.plainText();
             List<Component> original = itemMeta.lore();

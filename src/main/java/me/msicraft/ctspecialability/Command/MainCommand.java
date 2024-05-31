@@ -27,15 +27,11 @@ public class MainCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-        if (command.getName().equals("ctspecialability")) {
+        if (command.getName().equals("특수능력")) {
             if (sender.isOp()) {
                 String var = args[0];
                 switch (var) {
-                    case "reload" -> {
-                        plugin.reloadVariables();
-                        sender.sendMessage(CTSpecialAbility.PREFIX + " 구성 리로드 됨");
-                    }
-                    case "combat" -> {
+                    case "전투" -> {
                         if (sender instanceof Player player) {
                             ItemStack itemStack = new ItemStack(Material.COMPASS, 1);
                             ItemMeta itemMeta = itemStack.getItemMeta();
@@ -48,7 +44,7 @@ public class MainCommand implements CommandExecutor {
                             player.getInventory().addItem(itemStack);
                         }
                     }
-                    case "life" -> {
+                    case "생활" -> {
                         if (sender instanceof Player player) {
                             ItemStack itemStack = new ItemStack(Material.COMPASS, 1);
                             ItemMeta itemMeta = itemStack.getItemMeta();

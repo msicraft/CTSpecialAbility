@@ -1,6 +1,7 @@
 package me.msicraft.ctspecialability;
 
 import me.msicraft.ctspecialability.Command.MainCommand;
+import me.msicraft.ctspecialability.Command.SubCommand;
 import me.msicraft.ctspecialability.PlayerData.Event.PlayerRelatedEvent;
 import me.msicraft.ctspecialability.PlayerData.PlayerStatsManager;
 import me.msicraft.ctspecialability.SpecialAbility.Event.SpecialAbilityApplyEvent;
@@ -55,7 +56,8 @@ public final class CTSpecialAbility extends JavaPlugin {
     }
 
     private void commandRegister() {
-        getCommand("ctspecialability").setExecutor(new MainCommand(this));
+        getCommand("특수능력").setExecutor(new MainCommand(this));
+        getCommand("ctspecialability").setExecutor(new SubCommand(this));
     }
 
     public void reloadVariables() {

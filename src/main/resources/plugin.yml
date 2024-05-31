@@ -4,6 +4,8 @@ main: me.msicraft.ctspecialability.CTSpecialAbility
 api-version: '1.20'
 depend: [CTCore, CTPlayerData]
 commands:
-  ctspecialability:
+  특수능력:
     description: Main command
+  ctspecialability:
+    description: Sub command
     aliases: [ctsa]

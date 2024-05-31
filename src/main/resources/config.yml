@@ -17,7 +17,15 @@ SpecialAbility:
       CoolDown: 1
       MinAmount: 1
       MaxAmount: 3
-      DisplayName: "추가 데미지"
+      DisplayName: "추가 데미지 I"
+    TargetHealthBasedExtraDamage:
+      Enabled: true
+      CoolDown: 1
+      MinHealthRate: 0.7
+      MaxHealthRate: 0.99
+      MinExtraDamageRate: 0.05
+      MaxExtraDamageRate: 0.25
+      DisplayName: "추가 데미지 II"
   Life:
     ExtraBoneMeal:
       Enabled: true
@@ -31,3 +39,10 @@ SpecialAbility:
       Enabled: true
       CoolDown: 1
       DisplayName: "모래 변환"
+    NerfVeinMining:
+      Enabled: true
+      CoolDown: 1
+      MinAmount: 1
+      MaxAmount: 8
+      Radius: 2
+      DisplayName: "열화판 광맥 채굴"
